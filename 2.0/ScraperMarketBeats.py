@@ -52,8 +52,16 @@ class MarketBeats(Scraper.Ratings):
         return table;
         pass;
 
-    # def save(self, start_date, end_date):
-    # 	pass
+    '''
+    function: process scraper from website
+    input: start_date: date string, end_date: date string
+    output: 
+    exception: 
+    '''
+    def process(self, start_date, end_date):
+        for date in date_range(start_date, end_date):
+
+    	pass
 
 if __name__ == "__main__":
     url = "https://www.marketbeat.com/ratings/USA/2017-10-27/";

@@ -46,6 +46,12 @@ class MarketBeats(Ratings.Ratings):
         return table;
         pass;
 
+    '''
+    function: parse data from website to get exact info
+    input: date: date string
+    output: dataframe
+    exception: 
+    '''
     def category(self, datetime):
         # split date to year, month, day
         d = date_time.split('-');
@@ -59,7 +65,13 @@ class MarketBeats(Ratings.Ratings):
             
         pass;
 
-    def save(self, start_date, end_date):
+    '''
+    function: parse data from website to get exact info
+    input: date: date string
+    output: dataframe
+    exception: 
+    '''
+    def process(self, start_date, end_date):
         for single_date in dateRange(start_date, end_date):
             date_time = single_date.strftime("%Y-%m-%d");
             table = save_date(date_time);
