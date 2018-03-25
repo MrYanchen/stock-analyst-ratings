@@ -6,21 +6,21 @@ Version: python 3.6
 """
 from bs4 import BeautifulSoup
 import pandas as pd
-import Ratings
+import Scraper
 
-class MarketBeats(Ratings.Ratings):
+class Briefing(Scraper.Ratings):
     """docstring for ClassName"""
-    def __init__(self, url):
-        Ratings.Ratings.__init__(self, url);
+    def __init__(self):
+        Scraper.Ratings.__init__(self);
 
     '''
     function: parse data from website to get exact info
-    input: date: date string
+    input: url: string
     output: dataframe
     exception: 
     '''
-    def parse(self, category):
-        html = self.browse();
+    def parse(self, url, category):
+        html = self.browse(url);
         soup = BeautifulSoup(html, "lxml");
 
         table = pd.DataFrame();
@@ -42,7 +42,7 @@ class MarketBeats(Ratings.Ratings):
             r = pd.DataFrame(data);
             r['5'] = category;
             # change data array to data frame
-            table = table.append(t, ignore_index=True);
+            table = table.append(r, ignore_index=True);
         return table;
         pass;
 
@@ -53,26 +53,51 @@ class MarketBeats(Ratings.Ratings):
     exception: 
     '''
     def category(self, datetime):
+        # url of briefing website
+        url = "https://www.briefing.com/Investor/Calendars/Upgrades-Downgrades/";
+        category = ["Upgrades", 'Downgrades', 'Initiated', 'Resumed', 'Reiterated'];
+        
         # split date to year, month, day
-        d = date_time.split('-');
+        d = datetime.split('-');
 
         table = pd.DataFrame();
 
-        category = ["Upgrades", 'Downgrades', 'Initiated', 'Resumed', 'Reiterated'];
         # iterate through different urls
         for cat in category:
             u = url + cat + '/' + d[0] + '/' + d[1] + '/' + d[2];
-            
+            t = self.parse(u, cat)
+            table = table.append(t);
+
+        # modify the data frame to desired format
+        if (not table.empty):
+            table.columns = ['Brokerage', 'Date', 'Action', 'Company', 'Rating', 'Price_Target'];
+            table['Brokerage'] = None;
+            table['Brokerage'] = table['Action'];
+            table['Action'] = table['Price_Target'];
+            table['Price_Target'] = table['Rating'];
+            table['Rating'] = table['Company'];
+            table['Company'] = table['Date'];
+            table['Date'] = datetime;
+
+        return table;
         pass;
 
     '''
-    function: parse data from website to get exact info
-    input: date: date string
-    output: dataframe
+    function: process scraper from website
+    input: start_date: date string, end_date: date string
+    output: 
     exception: 
     '''
-    def process(self, start_date, end_date):
-        for single_date in dateRange(start_date, end_date):
-            date_time = single_date.strftime("%Y-%m-%d");
-            table = save_date(date_time);
+    def process(self, start_date, end_date, filepath, filetype):
+        for date in date_range(start_date, end_date):
+            datetime = date.strftime("%Y-%m-%d");
+            table = self.category(datetime);
+            self.save(table, date, filepath, filetype);
         pass;
+
+if __name__ == "__main__":
+    briefing = Briefing();
+    table = briefing.category("2017-12-11");
+    briefing.save(table, '11', 'D:\\', 'xlsx');
+    briefing.save(table, '11', 'D:\\', 'csv');
+    pass;

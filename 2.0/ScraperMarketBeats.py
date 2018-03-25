@@ -15,12 +15,13 @@ class MarketBeats(Scraper.Ratings):
 
     '''
     function: parse data from website to get exact info
-    input: date: date string
+    input: url: string
     output: dataframe
     exception: 
     '''
-    def parse(self, url):
-        html = self.browse(url);
+    def parse(self, date):
+        url = "https://www.marketbeat.com/ratings/USA/";
+        html = self.browse(url+date);
         soup = BeautifulSoup(html, "lxml");
 
         # extract desired information from the parsed data
@@ -58,15 +59,16 @@ class MarketBeats(Scraper.Ratings):
     output: 
     exception: 
     '''
-    def process(self, start_date, end_date):
+    def process(self, start_date, end_date, filepath, filetype):
         for date in date_range(start_date, end_date):
-
-    	pass
+            table = self.parse(date);
+            self.save(table, date, filepath, filetype);
+    	pass;
 
 if __name__ == "__main__":
-    url = "https://www.marketbeat.com/ratings/USA/2017-10-27/";
+    date = "2017-10-27";
     markbeats = MarketBeats();
-    table = markbeats.parse(url);
+    table = markbeats.parse(date);
     markbeats.save(table, '11', 'D:\\', 'xlsx');
     markbeats.save(table, '11', 'D:\\', 'csv');
     pass;
