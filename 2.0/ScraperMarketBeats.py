@@ -60,10 +60,13 @@ class MarketBeats(Scraper.Ratings):
     exception: 
     '''
     def process(self, start_date, end_date, filepath, filetype):
-        for date in date_range(start_date, end_date):
-            table = self.parse(date);
-            self.save(table, date, filepath, filetype);
-    	pass;
+        for date in self.date_range(start_date, end_date):
+            datetime = ("{:%Y-%m-%d}").format(date);
+            table = self.parse(datetime);
+            self.save(table, datetime, filepath, filetype);
+
+        return True;
+        pass;
 
 def main(start_date, end_date, filepath, filetype):
     markbeats = MarketBeats();
@@ -71,11 +74,6 @@ def main(start_date, end_date, filepath, filetype):
     pass;
 
 if __name__ == "__main__":
-    # date = "2017-10-27";
-    # markbeats = MarketBeats();
-    # table = markbeats.parse(date);
-    # markbeats.save(table, '11', 'D:\\', 'xlsx');
-    # markbeats.save(table, '11', 'D:\\', 'csv');
     start_date = sys.argv[1];
     end_date = sys.argv[2];
     filepath = sys.argv[3];

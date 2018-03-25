@@ -76,7 +76,9 @@ class Ratings(object):
     output: date list
     exception: start date > end date
     '''
-    def date_range(start_date, end_date):
+    def date_range(self, start_date, end_date):
+        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date();
+        end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date();
         # start date should prior to end date
         for n in range(int ((end_date - start_date).days)):
             yield start_date + datetime.timedelta(n);

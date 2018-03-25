@@ -89,15 +89,16 @@ class Briefing(Scraper.Ratings):
     exception: 
     '''
     def process(self, start_date, end_date, filepath, filetype):
-        for date in date_range(start_date, end_date):
-            datetime = date.strftime("%Y-%m-%d");
+        for date in self.date_range(start_date, end_date):
+            datetime = ("{:%Y-%m-%d}").format(date);
             table = self.category(datetime);
-            self.save(table, date, filepath, filetype);
+            self.save(table, datetime, filepath, filetype);
+
+        return True;
         pass;
 
 def main(start_date, end_date, filepath, filetype):
     briefing = Briefing();
-    # table = briefing.category("2017-12-11");
     briefing.process(start_date, end_date, filepath, filetype);
     
     pass
