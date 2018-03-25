@@ -95,9 +95,17 @@ class Briefing(Scraper.Ratings):
             self.save(table, date, filepath, filetype);
         pass;
 
-if __name__ == "__main__":
+def main(start_date, end_date, filepath, filetype):
     briefing = Briefing();
-    table = briefing.category("2017-12-11");
-    briefing.save(table, '11', 'D:\\', 'xlsx');
-    briefing.save(table, '11', 'D:\\', 'csv');
+    # table = briefing.category("2017-12-11");
+    briefing.process(start_date, end_date, filepath, filetype);
+    
+    pass
+
+if __name__ == "__main__":
+    start_date = sys.argv[1];
+    end_date = sys.argv[2];
+    filepath = sys.argv[3];
+    filetype = sys.argv[4];
+    main(start_date, end_date, filepath, filetype);
     pass;

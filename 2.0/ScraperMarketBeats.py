@@ -55,7 +55,7 @@ class MarketBeats(Scraper.Ratings):
 
     '''
     function: process scraper from website
-    input: start_date: date string, end_date: date string
+    input: start_date: date string, end_date: date string, filepath: string, filetype: string
     output: 
     exception: 
     '''
@@ -65,10 +65,20 @@ class MarketBeats(Scraper.Ratings):
             self.save(table, date, filepath, filetype);
     	pass;
 
-if __name__ == "__main__":
-    date = "2017-10-27";
+def main(start_date, end_date, filepath, filetype):
     markbeats = MarketBeats();
-    table = markbeats.parse(date);
-    markbeats.save(table, '11', 'D:\\', 'xlsx');
-    markbeats.save(table, '11', 'D:\\', 'csv');
+    markbeats.process(start_date, end_date, filepath, filetype)
+    pass;
+
+if __name__ == "__main__":
+    # date = "2017-10-27";
+    # markbeats = MarketBeats();
+    # table = markbeats.parse(date);
+    # markbeats.save(table, '11', 'D:\\', 'xlsx');
+    # markbeats.save(table, '11', 'D:\\', 'csv');
+    start_date = sys.argv[1];
+    end_date = sys.argv[2];
+    filepath = sys.argv[3];
+    filetype = sys.argv[4];
+    main(start_date, end_date, filepath, filetype);
     pass;
