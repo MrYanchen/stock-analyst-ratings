@@ -92,8 +92,10 @@ class Briefing(Scraper.Ratings):
         for date in self.date_range(start_date, end_date):
             datetime = ("{:%Y-%m-%d}").format(date);
             table = self.category(datetime);
-            self.save(table, datetime, filepath, filetype);
-
+            if (not table.empty):
+                self.save(table, datetime, filepath, filetype);
+            else:
+                print('Unable Save file in: %s' % datetime);
         return True;
         pass;
 
