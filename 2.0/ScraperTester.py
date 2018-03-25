@@ -16,9 +16,9 @@ class TestScraperMethods(unittest.TestCase):
         pass;
 
     '''
-    function: parse data from website to get exact info
-    input: date: date string
-    output: dataframe
+    function: test ScraperMarketBeats process function
+    input: 
+    output: 
     exception: 
     '''
     def test_markbeats_process(self):
@@ -32,9 +32,9 @@ class TestScraperMethods(unittest.TestCase):
         pass;
 
     '''
-    function: parse data from website to get exact info
-    input: date: date string
-    output: dataframe
+    function: test ScraperBriefing process function
+    input: 
+    output: 
     exception: 
     '''
     def test_briefing_process(self):

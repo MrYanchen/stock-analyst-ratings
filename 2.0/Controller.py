@@ -7,13 +7,13 @@ Version: python 3.6
 
 class Controller(object):
 	"""docstring for ClassName"""
-	def __init__(self, arg):
-		self.arg = arg;
+	def __init__(self):
 
 def main():
-	pass
+	pass;
 
 if __name__ == "__main__":
+	main();
     pass;
 
 	
