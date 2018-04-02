@@ -14,14 +14,49 @@ class MarketBeats(Scraper.Ratings):
         Scraper.Ratings.__init__(self);
 
     '''
+    function: set up website scraper
+    input: 
+    output: 
+    exception: 
+    '''
+    def setup():
+        self.url = "https://www.marketbeat.com/ratings/USA/";
+        pass;
+
+    '''
+    function: execute website scraper
+    input: start_date: date string, end_date: date string, filepath: string, filetype: string
+    output: boolean
+    exception: 
+    '''
+    def execute(self, start_date, end_date, filepath, filetype):
+        for date in self.date_range(start_date, end_date):
+            datetime = ("{:%Y-%m-%d}").format(date);
+            table = self.parse(datetime);
+            if (not table.empty):
+                self.save(table, datetime, filepath, filetype);
+            else:
+                print('Unable Save file in: %s' % datetime);
+        return True;
+        pass;
+
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def dispose():
+        pass;
+
+    '''
     function: parse data from website to get exact info
     input: url: string
     output: dataframe
     exception: 
     '''
     def parse(self, date):
-        url = "https://www.marketbeat.com/ratings/USA/";
-        html = self.browse(url+date);
+        html = self.browse(self.url+date);
         soup = BeautifulSoup(html, "lxml");
 
         # extract desired information from the parsed data
@@ -53,26 +88,17 @@ class MarketBeats(Scraper.Ratings):
         return table;
         pass;
 
-    '''
-    function: process scraper from website
-    input: start_date: date string, end_date: date string, filepath: string, filetype: string
-    output: 
-    exception: 
-    '''
-    def process(self, start_date, end_date, filepath, filetype):
-        for date in self.date_range(start_date, end_date):
-            datetime = ("{:%Y-%m-%d}").format(date);
-            table = self.parse(datetime);
-            if (not table.empty):
-                self.save(table, datetime, filepath, filetype);
-            else:
-                print('Unable Save file in: %s' % datetime);
-        return True;
-        pass;
-
+'''
+function: 
+input: 
+output: 
+exception: 
+'''
 def main(start_date, end_date, filepath, filetype):
     markbeats = MarketBeats();
-    markbeats.process(start_date, end_date, filepath, filetype)
+    markbeats.setup();
+    markbeats.execute(start_date, end_date, filepath, filetype);
+    markbeats.dispose();
     pass;
 
 if __name__ == "__main__":

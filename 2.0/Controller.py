@@ -9,6 +9,15 @@ class Controller(object):
 	"""docstring for ClassName"""
 	def __init__(self):
 
+	def setup():
+		pass
+
+	def execute():
+		pass
+
+	def dispose():
+		pass
+
 def main():
 	pass;
 

@@ -12,7 +12,9 @@ class TestScraperMethods(unittest.TestCase):
 
     def setUp(self):
         self.markbeats = ScraperMarketBeats.MarketBeats();
+        self.markbeats.setup();
         self.briefing = ScraperBriefing.Briefing();
+        self.briefing.setup();
         pass;
 
     '''
@@ -26,9 +28,9 @@ class TestScraperMethods(unittest.TestCase):
         end_date = "2018-03-24";
         filepath = "D:\\";
         filetype = "xlsx";
-        self.assertEqual(self.markbeats.process(start_date, end_date, filepath, filetype), True, 'Error in MarketBeats Process xlsx');
+        self.assertEqual(self.markbeats.execute(start_date, end_date, filepath, filetype), True, 'Error in MarketBeats Process xlsx');
         filetype = "csv";
-        self.assertEqual(self.markbeats.process(start_date, end_date, filepath, filetype), True, 'Error in MarketBeats Process csv');
+        self.assertEqual(self.markbeats.execute(start_date, end_date, filepath, filetype), True, 'Error in MarketBeats Process csv');
         pass;
 
     '''
@@ -42,9 +44,14 @@ class TestScraperMethods(unittest.TestCase):
         end_date = "2018-03-24";
         filepath = "D:\\";
         filetype = "xlsx";
-        self.assertEqual(self.briefing.process(start_date, end_date, filepath, filetype), True, 'Error in Briefing Process');
+        self.assertEqual(self.briefing.execute(start_date, end_date, filepath, filetype), True, 'Error in Briefing Process xlsx');
         filetype = "csv";
-        self.assertEqual(self.briefing.process(start_date, end_date, filepath, filetype), True, 'Error in Briefing Process');
+        self.assertEqual(self.briefing.execute(start_date, end_date, filepath, filetype), True, 'Error in Briefing Process csv');
+        pass;
+
+    def tearDown(self):
+        self.markbeats.dispose();
+        self.briefing.dispose();
         pass;
 
 if __name__ == '__main__':

@@ -14,6 +14,43 @@ class Briefing(Scraper.Ratings):
         Scraper.Ratings.__init__(self);
 
     '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def setup():
+        # url of briefing website
+        self.url = "https://www.briefing.com/Investor/Calendars/Upgrades-Downgrades/";
+        self.category = ["Upgrades", 'Downgrades', 'Initiated', 'Resumed', 'Reiterated'];
+        pass
+
+    '''
+    function: execute website scraper
+    input: start_date: date string, end_date: date string, filepath: string, filetype: string
+    output: boolean
+    exception: 
+    '''
+    def execute(self, start_date, end_date, filepath, filetype):
+        for date in self.date_range(start_date, end_date):
+            datetime = ("{:%Y-%m-%d}").format(date);
+            table = self.category(datetime);
+            if (not table.empty):
+                self.save(table, datetime, filepath, filetype);
+            else:
+                print('Unable Save file in: %s' % datetime);
+        return True;
+        pass;
+
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def dispose():
+        pass
+    '''
     function: parse data from website to get exact info
     input: url: string
     output: dataframe
@@ -48,23 +85,19 @@ class Briefing(Scraper.Ratings):
 
     '''
     function: parse data from website to get exact info
-    input: date: date string
+    input: date: datetime
     output: dataframe
     exception: 
     '''
-    def category(self, datetime):
-        # url of briefing website
-        url = "https://www.briefing.com/Investor/Calendars/Upgrades-Downgrades/";
-        category = ["Upgrades", 'Downgrades', 'Initiated', 'Resumed', 'Reiterated'];
-        
+    def category(self, datetime):       
         # split date to year, month, day
         d = datetime.split('-');
 
         table = pd.DataFrame();
 
         # iterate through different urls
-        for cat in category:
-            u = url + cat + '/' + d[0] + '/' + d[1] + '/' + d[2];
+        for cat in self.category:
+            u = self.url + cat + '/' + d[0] + '/' + d[1] + '/' + d[2];
             t = self.parse(u, cat)
             table = table.append(t);
 
@@ -82,28 +115,12 @@ class Briefing(Scraper.Ratings):
         return table;
         pass;
 
-    '''
-    function: process scraper from website
-    input: start_date: date string, end_date: date string
-    output: 
-    exception: 
-    '''
-    def process(self, start_date, end_date, filepath, filetype):
-        for date in self.date_range(start_date, end_date):
-            datetime = ("{:%Y-%m-%d}").format(date);
-            table = self.category(datetime);
-            if (not table.empty):
-                self.save(table, datetime, filepath, filetype);
-            else:
-                print('Unable Save file in: %s' % datetime);
-        return True;
-        pass;
-
 def main(start_date, end_date, filepath, filetype):
     briefing = Briefing();
-    briefing.process(start_date, end_date, filepath, filetype);
-    
-    pass
+    briefing.setup();
+    briefing.execute(start_date, end_date, filepath, filetype);
+    briefing.dispose();
+    pass;
 
 if __name__ == "__main__":
     start_date = sys.argv[1];
