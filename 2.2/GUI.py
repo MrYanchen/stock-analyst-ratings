@@ -11,25 +11,31 @@ class GUI(object):
     """docstring for ClassName"""
     def __init__(self):
         # main window
-        self.win = tk.Tk();
-        self.win.title('Stocks Ratings Scraper');
-        self.win.geometry('500x500+500+200');
-        self.win.resizable(0, 0);
+        win = tk.Tk();
+        win.title('Stocks Ratings Scraper');
+        win.geometry('500x500+500+200');
+        win.resizable(0, 0);
 
-        self.__add__menu__();
-        self.__add__mainframe__();
+        self.__add__menu__(win);
+        self.__add__mainframe__(win);
 
         # self.myLabel1 = tk.Label(self.win, text='MarketBeats & Briefing').pack();
 
         # self.myButton1 = tk.Button(self.win, text='Start', command=self.startPress).pack();
 
-        self.win.mainloop();
+        win.mainloop();
         pass;
 
-    def __add__menu__(self):
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def __add__menu__(self, win):
         # window menu
-        menuBar = tk.Menu(self.win);
-        self.win.config(menu=menuBar);
+        menuBar = tk.Menu(win);
+        win.config(menu=menuBar);
         # file menu
         fileMenu = tk.Menu(menuBar, tearoff=0);
         fileMenu.add_command(label='Exit');
@@ -41,28 +47,77 @@ class GUI(object):
         menuBar.add_cascade(label='File', menu=helpMenu);
         pass;
 
-    def __add__mainframe__(self):
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def __add__mainframe__(self, win):
         # main frame
-        mainFrame = ttk.LabelFrame(self.win, text='Briefing & MarketBeats');
+        mainFrame = ttk.LabelFrame(win, text='   Briefing & MarketBeats   ');
         mainFrame.grid(column=0, row=0, sticky='WE', padx=10, pady=10);
 
-        # start label
-        startDateLabel = ttk.Label(mainFrame, text='Start Date：').grid(column=1, row=0);
+        self.__add__start__label__(mainFrame);
+        self.__add__end__label__(mainFrame);
+        self.__add__file__path__label__(mainFrame);
+        
+        pass;
+
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def __add__start__label__(self, mainFrame):
+        # start date label
+        startDateLabel = ttk.Label(mainFrame, text='Start Date');
+        startDateLabel.grid(column=0, row=0, sticky='W', padx=10, pady=10);
         self.startDate = tk.StringVar();
         startDateEntered = ttk.Entry(mainFrame, width=12, textvariable=self.startDate);
-        startDateEntered.grid(column=1, row=1);
+        startDateEntered.grid(column=1, row=0, sticky='W');
         startDateEntered.delete(0, tk.END);
         startDateEntered.insert(0, 'year-mo-da');
+        pass;
 
-        # end label
-        endDateLabel = ttk.Label(mainFrame, text='End Date：').grid(column=2, row=0);
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def __add__end__label__(self, mainFrame):
+        # end date label
+        endDateLabel = ttk.Label(mainFrame, text='End Date:');
+        endDateLabel.grid(column=0, row=1, sticky='W', padx=10, pady=10);
         self.endDate = tk.StringVar();
         endDateEntered = ttk.Entry(mainFrame, width=12, textvariable=self.endDate);
-        endDateEntered.grid(column=2, row=1);
+        endDateEntered.grid(column=1, row=1, sticky='W');
         endDateEntered.delete(0, tk.END);
         endDateEntered.insert(0, 'year-mo-da');
         pass
 
+
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def __add__file__path__label__(self, mainFrame):
+        # filepahtLable = ttk.Label(mainFrame, text='File path');
+        # filepahtLable.filename =  filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("all files","*.*")))
+        # print (filepahtLable.filename)
+        pass
+
+
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
     def startPress(self):
         self.myLabel2 = tk.Label(self.win, text=self.startDate.get()).pack();
         pass;
