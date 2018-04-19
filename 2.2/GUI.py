@@ -6,6 +6,7 @@ Version: python 3.6
 """
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog
 
 class GUI(object):
     """docstring for ClassName"""
@@ -13,21 +14,17 @@ class GUI(object):
         # main window
         win = tk.Tk();
         win.title('Stocks Ratings Scraper');
-        win.geometry('500x500+500+200');
+        win.geometry();
         win.resizable(0, 0);
 
         self.__add__menu__(win);
         self.__add__mainframe__(win);
 
-        # self.myLabel1 = tk.Label(self.win, text='MarketBeats & Briefing').pack();
-
-        # self.myButton1 = tk.Button(self.win, text='Start', command=self.startPress).pack();
-
         win.mainloop();
         pass;
 
     '''
-    function: 
+    function: add menu
     input: 
     output: 
     exception: 
@@ -48,7 +45,7 @@ class GUI(object):
         pass;
 
     '''
-    function: 
+    function: add main frame
     input: 
     output: 
     exception: 
@@ -58,19 +55,20 @@ class GUI(object):
         mainFrame = ttk.LabelFrame(win, text='   Briefing & MarketBeats   ');
         mainFrame.grid(column=0, row=0, sticky='WE', padx=10, pady=10);
 
-        self.__add__start__label__(mainFrame);
-        self.__add__end__label__(mainFrame);
+        self.__add__start__data__label__(mainFrame);
+        self.__add__end__data__label__(mainFrame);
         self.__add__file__path__label__(mainFrame);
+        self.__add__start__button__label__(mainFrame);
         
         pass;
 
     '''
-    function: 
+    function: add enter start data label
     input: 
     output: 
     exception: 
     '''
-    def __add__start__label__(self, mainFrame):
+    def __add__start__data__label__(self, mainFrame):
         # start date label
         startDateLabel = ttk.Label(mainFrame, text='Start Date');
         startDateLabel.grid(column=0, row=0, sticky='W', padx=10, pady=10);
@@ -82,12 +80,12 @@ class GUI(object):
         pass;
 
     '''
-    function: 
+    function: add enter end data label
     input: 
     output: 
     exception: 
     '''
-    def __add__end__label__(self, mainFrame):
+    def __add__end__data__label__(self, mainFrame):
         # end date label
         endDateLabel = ttk.Label(mainFrame, text='End Date:');
         endDateLabel.grid(column=0, row=1, sticky='W', padx=10, pady=10);
@@ -98,28 +96,65 @@ class GUI(object):
         endDateEntered.insert(0, 'year-mo-da');
         pass
 
-
     '''
-    function: 
+    function: add enter save file directory label
     input: 
     output: 
     exception: 
     '''
     def __add__file__path__label__(self, mainFrame):
-        # filepahtLable = ttk.Label(mainFrame, text='File path');
-        # filepahtLable.filename =  filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("all files","*.*")))
-        # print (filepahtLable.filename)
-        pass
-
+        filepathLable = ttk.Label(mainFrame, text='File Path:');
+        filepathLable.grid(column=0, row=2, sticky='W', padx=10, pady=10);
+        self.filepathLableEntered = ttk.Entry(mainFrame, width=30);
+        self.filepathLableEntered.grid(column=1, row=2, sticky='W');
+        self.filepathLableEntered.delete(0, tk.END);
+        self.__add__file__path__select__button__(mainFrame);
+        pass;
 
     '''
-    function: 
+    function: add select directory button
     input: 
     output: 
     exception: 
     '''
-    def startPress(self):
-        self.myLabel2 = tk.Label(self.win, text=self.startDate.get()).pack();
+    def __add__file__path__select__button__(self, mainFrame):
+        button = tk.Button(mainFrame, text="Select", command=self.__file__path__select__button__pressed__);
+        button.grid(column=3, row=2, sticky='W', padx=10, pady=10);
+        pass;
+
+    '''
+    function: select button pressed function
+    input: 
+    output: 
+    exception: 
+    '''
+    def __file__path__select__button__pressed__(self):
+        self.directory = filedialog.askdirectory();
+        self.filepathLableEntered.insert(0, self.directory);
+        pass;
+
+    '''
+    function: add start button
+    input: 
+    output: 
+    exception: 
+    '''
+    def __add__start__button__label__(self, mainFrame):
+        button = tk.Button(mainFrame, text="Start", command=self.__start__button__pressed__);
+        button.grid(column=1, row=3, sticky='W', padx=10, pady=10);
+        pass
+
+
+    '''
+    function: start button pressed function
+    input: 
+    output: 
+    exception: 
+    '''
+    def __start__button__pressed__(self):
+        if self.directory is None:
+            pass;
+        print(self.directory);
         pass;
 
 
