@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar 15 15:39:13 2018
+Created on Thu Mar 15 15:39:13 2018
 Version: python 3.6
 @author: MrYanc
 """
@@ -19,7 +19,7 @@ class Briefing(Scraper.Ratings):
     output: 
     exception: 
     '''
-    def setup():
+    def setup(self):
         # url of briefing website
         self.url = "https://www.briefing.com/Investor/Calendars/Upgrades-Downgrades/";
         self.category = ["Upgrades", 'Downgrades', 'Initiated', 'Resumed', 'Reiterated'];
@@ -48,8 +48,18 @@ class Briefing(Scraper.Ratings):
     output: 
     exception: 
     '''
-    def dispose():
+    def dispose(self):
         pass
+
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def worker(self):
+        pass
+        
     '''
     function: parse data from website to get exact info
     input: url: string

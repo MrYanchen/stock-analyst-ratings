@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar 15 15:39:13 2018
+Created on Thu Mar 15 15:39:13 2018
 Version: python 3.6
 @author: MrYanc
 """
 from bs4 import BeautifulSoup
 import pandas as pd
 import Scraper
+from queue import Queue, Empty
+from threading import Thread
+
+THREAD_POOL_SIZE = 5;
 
 class MarketBeats(Scraper.Ratings):
     """docstring for ClassName"""
@@ -19,7 +23,7 @@ class MarketBeats(Scraper.Ratings):
     output: 
     exception: 
     '''
-    def setup():
+    def setup(self):
         self.url = "https://www.marketbeat.com/ratings/USA/";
         pass;
 
@@ -30,13 +34,24 @@ class MarketBeats(Scraper.Ratings):
     exception: 
     '''
     def execute(self, start_date, end_date, filepath, filetype):
+        queue = Queue();
+
         for date in self.date_range(start_date, end_date):
             datetime = ("{:%Y-%m-%d}").format(date);
-            table = self.parse(datetime);
-            if (not table.empty):
-                self.save(table, datetime, filepath, filetype);
-            else:
-                print('Unable Save file in: %s' % datetime);
+            queue.put(datetime);
+
+        threads = [
+            Thread(target=self.worker, args=(queue, filepath, filetype,))
+            for _ in range(THREAD_POOL_SIZE)
+        ];
+
+        for thread in threads:
+            thread.start();
+
+        queue.join();
+        while threads:
+            threads.pop().join();
+        
         return True;
         pass;
 
@@ -46,7 +61,28 @@ class MarketBeats(Scraper.Ratings):
     output: 
     exception: 
     '''
-    def dispose():
+    def dispose(self):
+        pass;
+
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def worker(self, queue, filepath, filetype):
+        while not queue.empty():
+            try:
+                item = queue.get(block=False);
+            except Empty:
+                break;
+            else:
+                table = self.parse(item);
+                if (not table.empty):
+                    self.save(table, item, filepath, filetype);
+                else:
+                    print('Unable Save file in: %s' % item);
+                queue.task_done();
         pass;
 
     '''

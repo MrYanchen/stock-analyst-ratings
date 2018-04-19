@@ -1,4 +1,8 @@
 # Stock Analyst Ratings
+## 2.2:
+Add GUI
+## 2.1:
+Use multi-threading
 ## 2.0:
 Python crawler to get daily stock analyst ratings data from [MarketBeat](https://www.marketbeat.com/ratings/USA/latest/) and [Briefing](https://www.briefing.com/investor/calendars/upgrades-downgrades/)<br>
 Use python 3.6
