@@ -18,15 +18,15 @@ class TestScraperMethods(unittest.TestCase):
         pass;
 
     '''
-    function: test ScraperMarketBeats process function
+    function: test ScraperMarketBeats execute function
     input: 
     output: 
     exception: 
     '''
-    def test_markbeats_process(self):
+    def test_markbeats_execute(self):
         start_date = "2018-03-22";
         end_date = "2018-03-24";
-        filepath = "D:\\";
+        filepath = "E:\\";
         filetype = "xlsx";
         self.assertEqual(self.markbeats.execute(start_date, end_date, filepath, filetype), True, 'Error in MarketBeats Process xlsx');
         filetype = "csv";
@@ -34,15 +34,15 @@ class TestScraperMethods(unittest.TestCase):
         pass;
 
     '''
-    function: test ScraperBriefing process function
+    function: test ScraperBriefing execute function
     input: 
     output: 
     exception: 
     '''
-    def test_briefing_process(self):
+    def test_briefing_execute(self):
         start_date = "2018-03-22";
         end_date = "2018-03-24";
-        filepath = "D:\\";
+        filepath = "E:\\";
         filetype = "xlsx";
         self.assertEqual(self.briefing.execute(start_date, end_date, filepath, filetype), True, 'Error in Briefing Process xlsx');
         filetype = "csv";

@@ -19,7 +19,7 @@ class MarketBeats(Scraper.Ratings):
     output: 
     exception: 
     '''
-    def setup():
+    def setup(self):
         self.url = "https://www.marketbeat.com/ratings/USA/";
         pass;
 
@@ -46,7 +46,7 @@ class MarketBeats(Scraper.Ratings):
     output: 
     exception: 
     '''
-    def dispose():
+    def dispose(self):
         pass;
 
     '''

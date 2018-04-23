@@ -11,9 +11,6 @@ import pandas as pd
 import datetime
 
 class Ratings(object):
-    # custom header
-    headers = {'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'};
-
     """docstring for ClassName"""
     def __init__(self):
         pass;
@@ -25,8 +22,12 @@ class Ratings(object):
     exception: url not found exception; connection lost exception
     '''
     def browse(self, url):
+        # custom header
+        headers = {'User-agent': 
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'};
+
         try:
-            r = requests.get(url, headers=self.headers);
+            r = requests.get(url, headers=headers);
             return r.text;
         except Exception as e:
             raise e;

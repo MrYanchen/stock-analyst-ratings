@@ -19,11 +19,8 @@ class Briefing(Scraper.Ratings):
     output: 
     exception: 
     '''
-    def setup():
-        # url of briefing website
-        self.url = "https://www.briefing.com/Investor/Calendars/Upgrades-Downgrades/";
-        self.category = ["Upgrades", 'Downgrades', 'Initiated', 'Resumed', 'Reiterated'];
-        pass
+    def setup(self):
+        pass;
 
     '''
     function: execute website scraper
@@ -34,7 +31,8 @@ class Briefing(Scraper.Ratings):
     def execute(self, start_date, end_date, filepath, filetype):
         for date in self.date_range(start_date, end_date):
             datetime = ("{:%Y-%m-%d}").format(date);
-            table = self.category(datetime);
+            table = self.process(datetime);
+            table = self.parse(table, datetime);
             if (not table.empty):
                 self.save(table, datetime, filepath, filetype);
             else:
@@ -48,39 +46,52 @@ class Briefing(Scraper.Ratings):
     output: 
     exception: 
     '''
-    def dispose():
-        pass
-        
+    def dispose(self):
+        pass;
+
     '''
-    function: parse data from website to get exact info
-    input: url: string
-    output: dataframe
+    function: scrape data from website
+    input: 
+    output: 
     exception: 
     '''
-    def parse(self, url, category):
-        html = self.browse(url);
-        soup = BeautifulSoup(html, "lxml");
+    def process(self, datetime):
+        # url of briefing website
+        url = "https://www.briefing.com/Investor/Calendars/Upgrades-Downgrades/";
+        category = ["Upgrades", 'Downgrades', 'Initiated', 'Resumed', 'Reiterated'];
+        
+        # split date to year, month, day
+        d = datetime.split('-');
 
         table = pd.DataFrame();
-        # extract desired information from the parsed data
-        t = soup.find('table', attrs={'class':'calendar-table'});
+        # iterate through different urls
+        for cat in category:
+            u = url + cat + '/' + d[0] + '/' + d[1] + '/' + d[2];
 
-        data = [];
-        # append columns from the table to data array
-        if (t != None):
-            rows = t.find_all('tr');
-            for row in rows:
-                columns = row.find_all('td');
-                columns = [col.text.strip() for col in columns];
-                data.append([col for col in columns if col]);
+            # read in the parsed data from website
+            html = self.browse(u);
+            soup = BeautifulSoup(html, "lxml");
 
-            if (data != None):
-                del data[0];
-
-            r = pd.DataFrame(data);
-            r['5'] = category;
-            # change data array to data frame
-            table = table.append(r, ignore_index=True);
+            # extract desired information from the parsed data
+            table_parse = soup.find('table', attrs={'class':'calendar-table'});
+            
+            data = [];
+            # append columns from the table to data array
+            if (table_parse != None):
+                rows = table_parse.find_all('tr');
+                for row in rows:
+                    columns = row.find_all('td');
+                    columns = [col.text.strip() for col in columns];
+                    data.append([col for col in columns if col]);
+                
+                if (data != None):
+                    del data[0];
+                
+                t = pd.DataFrame(data);
+                t['5'] = cat;
+                # change data array to data frame
+                table = table.append(t, ignore_index=True);
+    
         return table;
         pass;
 
@@ -90,18 +101,7 @@ class Briefing(Scraper.Ratings):
     output: dataframe
     exception: 
     '''
-    def category(self, datetime):       
-        # split date to year, month, day
-        d = datetime.split('-');
-
-        table = pd.DataFrame();
-
-        # iterate through different urls
-        for cat in self.category:
-            u = self.url + cat + '/' + d[0] + '/' + d[1] + '/' + d[2];
-            t = self.parse(u, cat)
-            table = table.append(t);
-
+    def parse(self, table, datetime):       
         # modify the data frame to desired format
         if (not table.empty):
             table.columns = ['Brokerage', 'Date', 'Action', 'Company', 'Rating', 'Price_Target'];

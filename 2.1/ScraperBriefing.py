@@ -7,6 +7,10 @@ Version: python 3.6
 from bs4 import BeautifulSoup
 import pandas as pd
 import Scraper
+from queue import Queue, Empty
+from threading import Thread
+
+THREAD_POOL_SIZE = 5;
 
 class Briefing(Scraper.Ratings):
     """docstring for ClassName"""
@@ -32,13 +36,24 @@ class Briefing(Scraper.Ratings):
     exception: 
     '''
     def execute(self, start_date, end_date, filepath, filetype):
+        queue = Queue();
+
         for date in self.date_range(start_date, end_date):
             datetime = ("{:%Y-%m-%d}").format(date);
-            table = self.category(datetime);
-            if (not table.empty):
-                self.save(table, datetime, filepath, filetype);
-            else:
-                print('Unable Save file in: %s' % datetime);
+            queue.put(datetime);
+
+        threads = [
+            Thread(target=self.worker, args=(queue, filepath, filetype,))
+            for _ in range(THREAD_POOL_SIZE)
+        ];
+
+        for thread in threads:
+            thread.start();
+
+        queue.join();
+        while threads:
+            threads.pop().join();
+
         return True;
         pass;
 
@@ -57,39 +72,65 @@ class Briefing(Scraper.Ratings):
     output: 
     exception: 
     '''
-    def worker(self):
-        pass
-        
-    '''
-    function: parse data from website to get exact info
-    input: url: string
-    output: dataframe
+    def worker(self, queue, filepath, filetype):
+        while not queue.empty():
+            try:
+                item = queue.get(block=False);
+            except Empty:
+                break;
+            else:
+                table = self.process(item);
+                table = self.parse(table, item);
+                if (not table.empty):
+                    self.save(table, item, filepath, filetype);
+                else:
+                    print('Unable Save file in: %s' % item);
+                queue.task_done();
+        pass;
+
+        '''
+    function: scrape data from website
+    input: 
+    output: 
     exception: 
     '''
-    def parse(self, url, category):
-        html = self.browse(url);
-        soup = BeautifulSoup(html, "lxml");
+    def process(self, datetime):
+        # url of briefing website
+        url = "https://www.briefing.com/Investor/Calendars/Upgrades-Downgrades/";
+        category = ["Upgrades", 'Downgrades', 'Initiated', 'Resumed', 'Reiterated'];
+        
+        # split date to year, month, day
+        d = datetime.split('-');
 
         table = pd.DataFrame();
-        # extract desired information from the parsed data
-        t = soup.find('table', attrs={'class':'calendar-table'});
+        # iterate through different urls
+        for cat in category:
+            u = url + cat + '/' + d[0] + '/' + d[1] + '/' + d[2];
 
-        data = [];
-        # append columns from the table to data array
-        if (t != None):
-            rows = t.find_all('tr');
-            for row in rows:
-                columns = row.find_all('td');
-                columns = [col.text.strip() for col in columns];
-                data.append([col for col in columns if col]);
+            # read in the parsed data from website
+            html = self.browse(u);
+            soup = BeautifulSoup(html, "lxml");
 
-            if (data != None):
-                del data[0];
-
-            r = pd.DataFrame(data);
-            r['5'] = category;
-            # change data array to data frame
-            table = table.append(r, ignore_index=True);
+            # extract desired information from the parsed data
+            table_parse = soup.find('table', attrs={'class':'calendar-table'});
+            
+            data = [];
+            # append columns from the table to data array
+            if (table_parse != None):
+                rows = table_parse.find_all('tr');
+                for row in rows:
+                    columns = row.find_all('td');
+                    columns = [col.text.strip() for col in columns];
+                    data.append([col for col in columns if col]);
+                
+                if (data != None):
+                    del data[0];
+                
+                t = pd.DataFrame(data);
+                t['5'] = cat;
+                # change data array to data frame
+                table = table.append(t, ignore_index=True);
+    
         return table;
         pass;
 
@@ -99,18 +140,7 @@ class Briefing(Scraper.Ratings):
     output: dataframe
     exception: 
     '''
-    def category(self, datetime):       
-        # split date to year, month, day
-        d = datetime.split('-');
-
-        table = pd.DataFrame();
-
-        # iterate through different urls
-        for cat in self.category:
-            u = self.url + cat + '/' + d[0] + '/' + d[1] + '/' + d[2];
-            t = self.parse(u, cat)
-            table = table.append(t);
-
+    def parse(self, table, datetime):       
         # modify the data frame to desired format
         if (not table.empty):
             table.columns = ['Brokerage', 'Date', 'Action', 'Company', 'Rating', 'Price_Target'];
