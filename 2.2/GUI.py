@@ -12,27 +12,56 @@ class GUI(object):
     """docstring for ClassName"""
     def __init__(self):
         # main window
-        win = tk.Tk();
-        win.title('Stocks Ratings Scraper');
-        win.geometry();
-        win.resizable(0, 0);
-
-        self.__add__menu__(win);
-        self.__add__mainframe__(win);
-
-        win.mainloop();
+        self.win = tk.Tk();
+        self.win.title('Stocks Ratings Scraper');
+        self.win.geometry();
+        self.win.resizable(0, 0);
+        self.__add__menu__();
+        self.__add__mainframe__();
         pass;
 
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def setup(self, briefing, marketbeats):
+        # set up
+        self.set_briefing(briefing);
+        self.set_marketbeats(marketbeats);
+        pass;
+
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def execute(self):
+        self.win.mainloop();
+        return True;
+        pass;
+
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def dispose(self):
+        pass;
+        
     '''
     function: add menu
     input: 
     output: 
     exception: 
     '''
-    def __add__menu__(self, win):
+    def __add__menu__(self):
         # window menu
-        menuBar = tk.Menu(win);
-        win.config(menu=menuBar);
+        menuBar = tk.Menu(self.win);
+        self.win.config(menu=menuBar);
         # file menu
         fileMenu = tk.Menu(menuBar, tearoff=0);
         fileMenu.add_command(label='Exit');
@@ -50,9 +79,9 @@ class GUI(object):
     output: 
     exception: 
     '''
-    def __add__mainframe__(self, win):
+    def __add__mainframe__(self):
         # main frame
-        mainFrame = ttk.LabelFrame(win, text='   Briefing & MarketBeats   ');
+        mainFrame = ttk.LabelFrame(self.win, text='   Briefing & MarketBeats   ');
         mainFrame.grid(column=0, row=0, sticky='WE', padx=10, pady=10);
 
         self.__add__start__data__label__(mainFrame);
@@ -144,7 +173,6 @@ class GUI(object):
         button.grid(column=1, row=3, sticky='W', padx=10, pady=10);
         pass
 
-
     '''
     function: start button pressed function
     input: 
@@ -154,12 +182,39 @@ class GUI(object):
     def __start__button__pressed__(self):
         if self.directory is None:
             pass;
-        print(self.directory);
+        if self.startDate is not None:
+            pass;
+        if self.endDate is not None:
+            pass;
+        self.briefing.execute(self.startDate.get(), self.endDate.get(), self.directory, 'csv');
+        self.marketbeats.execute(self.startDate.get(), self.endDate.get(), self.directory, 'csv');
         pass;
 
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def set_briefing(self, briefing):
+        self.briefing = briefing;
+        pass;
+
+    '''
+    function: 
+    input: 
+    output: 
+    exception: 
+    '''
+    def set_marketbeats(self, marketbeats):
+        self.marketbeats = marketbeats;
+        pass;
 
 def main():
     gui = GUI();
+    # gui.setup();
+    gui.execute();
+    gui.dispose();
     pass;
 
 if __name__ == "__main__":
